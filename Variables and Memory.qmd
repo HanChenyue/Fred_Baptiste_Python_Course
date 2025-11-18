@@ -1,0 +1,131 @@
+---
+title: "Variables and Memory"
+format: html
+---
+
+# Variables are Memory References
+
+First, we create a variable `my_var`.
+
+```{python}
+my_var = 10
+print(my_var)
+```
+
+Let's look at the memory address of `my_var` using the `id()` function.
+
+```{python}
+print(id(my_var))
+```
+
+We can obtain the hexademical output of the memory address using `hex()`
+
+```{python}
+print(hex(id(my_var)))
+```
+
+Next, we create another variable `greeting`.
+
+```{python}
+greeting = "hello"
+print(greeting)
+```
+
+The memory address of `greeting` is different from `my_var`.
+
+```{python}
+print(id(greeting))
+```
+
+```{python}
+print(hex(id(greeting)))
+```
+
+Note: `my_var` is a reference (or think of it as a pointer) to the a memory object storing value 10.
+
+Hence, we are assigning the reference of `my_var` and assigning it to `other_var`. In other words, `other_var` is also "_pointing_" to the same object in memory.
+
+```{python}
+# Sharing the same reference
+other_var = my_var
+```
+
+# Reference Counting
+
+Passing `my_var` to `getrefcount()` creates another reference.
+
+```{python}
+import sys
+import ctypes
+sys.getrefcount(my_var)
+```
+
+Alternatively, use `ctypes.c_long.from_address(address).value`.
+Here, we just pass the memory address (an _integer_), not a reference.
+It does not affect reference count.
+
+```{python}
+a = [1, 2, 3]
+id(a)
+```
+
+```{python}
+sys.getrefcount(a)
+```
+
+```{python}
+# Much more exact as it does not +1
+def ref_count(address: int):
+    return ctypes.c_long.from_address(address).value
+```
+
+```{python}
+ref_count(id(a))
+```
+
+`id()` released its pointer to the memory address once it finished running, hence it returns to 1 again before `ref_count()` was executed.
+
+Alternatively, we can run
+
+```{python}
+ref_count(2359113063744)
+```
+
+```{python}
+b = a
+id(b)
+```
+
+```{python}
+ref_count(id(a))
+```
+
+```{python}
+c = a
+ref_count(id(c))
+```
+
+```{python}
+c = 10
+ref_count(id(a))
+b = None
+ref_count(id(a))
+```
+
+```{python}
+a_id = id(a)
+a = None
+ref_count(a_id)
+```
+
+```{python}
+ref_count(a_id)
+```
+
+# Garbage Collection
+
+If we create a circular reference, Python memory manager will not be able to manage it and it will cause *Memory Leak*.
+Hence, we will need garbage collector.
+
+```{python}
+```
