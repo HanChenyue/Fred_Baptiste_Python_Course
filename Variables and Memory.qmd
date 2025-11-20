@@ -128,4 +128,68 @@ If we create a circular reference, Python memory manager will not be able to man
 Hence, we will need garbage collector.
 
 ```{python}
+import ctypes
+import gc
+```
+
+```{python}
+def ref_count(address):
+    return ctypes.c_long.from_address(address).value
+```
+
+```{python}
+def object_by_id(object_id):
+    for obj in gc.get_objects():
+        if id(obj) == object_id:
+            return "Object exists."
+    return "Object not found."
+```
+
+```{python}
+class A:
+    def __init__(self):
+        self.b = B(self)  # 1st "self" in self.b is A's "self" (a pointer holding a memory value)
+        print('A: self: {0},b: {1}'.format(hex(id(self)), hex(id(self.b))))
+
+class B:
+    def __init__(self, a):  # 'self' is B, 'a' is the argument passed in from B(self)
+        self.a = a  # Takes the address of A and save it inside the memory block of B
+        print('B: self: {0}, a: {1}'.format(hex(id(self)), hex(id(self.a))))
+
+gc.disable()
+my_var = A()
+print("ID of my_var: ", hex(id(my_var)))  # Should be equals to memory address of A.
+print("ID of my_var.b: ", hex(id(my_var.b)))  # Should be equals to memory address of A.
+print("ID of my_var.b.a: ", hex(id(my_var.b.a)))  # Should be equals to memory address of A. 
+```
+
+```{python}
+id_a = id(my_var)
+id_b = id(my_var.b)
+print(hex(id_a))
+print(hex(id_b))
+```
+
+```{python}
+# Running in Jupyter Notebook or Quarto will return nonsensical values
+# Run it in a Python terminal
+ref_count(id_a)  # Should be 2 because my_var is pointing to Object A (Global Reference) and Object B is pointing to Object A (self.a = a)
+ref_count(id_b)  # Should be 1 because Object A is pointing to Object B (self.b = B(self))
+object_by_id(id_a)
+object_by_id(id_b)
+```
+
+```{python}
+# Destroying the reference between my_var and object a
+my_var = None
+ref_count(id_a)
+ref_count(id_b)
+object_by_id(id_a)
+object_by_id(id_b)
+```
+
+```{python}
+gc.collect()
+object_by_id(id_a)
+object_by_id(id_b)
 ```
