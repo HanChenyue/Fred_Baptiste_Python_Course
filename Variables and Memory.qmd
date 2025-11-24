@@ -193,3 +193,129 @@ gc.collect()
 object_by_id(id_a)
 object_by_id(id_b)
 ```
+
+# Dynamic vs Static Typing
+
+```{python}
+a = "hello"
+type(a)
+```
+
+```{python}
+a = 10
+type(a)
+```
+
+```{python}
+a = lambda x: x**2
+a(2)
+type(a)
+```
+
+```{python}
+a = 3 + 4j
+type()
+```
+
+# Variable -assignment
+
+```{python}
+# Different memory addresses
+my_var = 10
+print("my_var = 10's memory address", hex(id(my_var)))
+my_var = 15
+print("my_var = 15's memory address", hex(id(my_var)))
+my_var = my_var + 5
+print("my_var = my_var + 5's memory address", hex(id(my_var)))
+```
+
+```{python}
+# Same memory address
+a = 9
+b = 9
+print("a's memory address", hex(id(a)))
+print("b's memory address", hex(id(b)))
+```
+
+# Object Mutability
+
+```{python}
+# Tuples are immutable, and for t, the integers inside it are immutable too
+t = (1, 2, 3)
+
+# Lists are mutable
+a = [1, 2]
+b = [3, 4]
+
+t = (a, b)
+```
+
+```{python}
+a.append(3)
+b.append(5)
+print(a)
+print(b)
+print(t)  # t is immutable, but the elements inside t were not immutable
+```
+
+```{python}
+my_list = [1, 2, 3]
+type(my_list)
+print("Before appending: ", hex(id(my_list)))
+my_list.append(4)  # Expect the same memory address because the append method only modify the internal state of my_list
+print("After appending: ", hex(id(my_list)))  # Same as before
+```
+
+```{python}
+my_list_1 = [1, 2, 3]
+print("Before adding: ", hex(id(my_list_1)))
+my_list_1 = my_list_1 + [4]  # Expect different memory address because RHS isn't modifying the internal state of my_list_1
+my_list_1
+print("After adding: ", hex(id(my_list_1)))  # Different
+```
+
+```{python}
+my_dict = dict(key1 = 1, key2 = 'a')
+my_dict
+```
+
+```{python}
+print("Before adding: ", hex(id(my_dict)))
+my_dict['key3'] = 10.5
+my_dict
+```
+
+```{python}
+print("After adding: ", hex(id(my_dict)))  # Same memory address
+```
+
+```{python}
+t = (1, 2, 3)
+print("Before adding: ", hex(id(t)))
+```
+
+```{python}
+print("ID of t[0]: ", hex(id(t[0])))
+print("ID of t[1]: ", hex(id(t[1])))
+print("ID of t[2]: ", hex(id(t[2])))
+```
+
+```{python}
+t = ([1, 2], [3, 4])
+t
+```
+
+```{python}
+t[0]
+```
+
+```{python}
+t[1]
+```
+
+```{python}
+t[0].append(3)
+t
+```
+
+# Function Arguments and Mutability
