@@ -319,3 +319,65 @@ t
 ```
 
 # Function Arguments and Mutability
+
+## Immutable objects
+
+```{python}
+def process(s):
+    print("Initial s's memory ID = {0}".format(hex(id(s))))
+    s = s + " world"
+    print("Final s's memory ID = {0}".format(hex(id(s))))
+```
+
+```{python}
+my_var = "hello"
+print("my_var's memory ID = {0}".format(hex(id(my_var))))
+```
+
+```{python}
+process(my_var)  # Final s's memory ID changed
+print("Original my_var's memory ID = {0}".format(hex(id(my_var))))  # Remained the same
+print(my_var)  # Value of my_var remained unchanged
+```
+
+## Mutable objects
+
+```{python}
+def modify_list(lst):
+    print("Initial lst's memory ID = {0}".format(hex(id(lst))))
+    lst.append(100)
+    print("Final lst's memory ID = {0}".format(hex(id(lst))))
+```
+
+```{python}
+my_list = [1, 2, 3]
+print("my_list's memory ID = {0}".format(hex(id(my_list))))
+```
+
+```{python}
+modify_list(my_list)  # Memory ID remained unchanged
+print("Original my_list's memory ID = {0}".format(hex(id(my_list))))  # Remained the same
+print(my_list)  # Value of my_list changed
+```
+
+## Modifying mutable element contained in immutable object
+
+```{python}
+def modify_tuple(t):
+    print("Initial t's memory ID = {0}".format(hex(id(t))))
+    t[0].append(100)
+    print("Final t's memory ID = {0}".format(hex(id(t))))
+```
+
+```{python}
+my_tuple = ([1, 2], 'a')
+print("my_tuple's memory ID = {0}".format(hex(id(my_tuple))))
+```
+
+```{python}
+modify_tuple(my_tuple)  # Memory ID remained unchanged
+```
+
+```{python}
+print(my_tuple)  # Value of my_tuple changed
+```
