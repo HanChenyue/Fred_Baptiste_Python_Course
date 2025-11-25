@@ -381,3 +381,365 @@ modify_tuple(my_tuple)  # Memory ID remained unchanged
 ```{python}
 print(my_tuple)  # Value of my_tuple changed
 ```
+
+# Shared References and Mutability
+
+```{python}
+a = "hello"
+b = a
+```
+
+```{python}
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+a = "hello"
+b = "hello"
+```
+
+```{python}
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+b = "hello"
+print("b's memory address: {0}".format(hex(id(b))))  # Changed
+```
+
+```{python}
+a = 500
+b = 500
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Different
+```
+
+```{python}
+a = [1, 2, 3]
+b = a
+```
+
+```{python}
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+b.append(100)
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+# Contents in b will follow a
+print(a)
+print(b)
+```
+
+# Variable Equality
+
+```{python}
+a = 10
+b = 10
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = 500
+b = 500
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = [1, 2, 3]
+b = [1, 2, 3]
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = 10
+b = 10.0
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = 10 + 0j
+b = 10.0
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+print("Memory ID of None: {0}".format(hex(id(None))))
+print("Type of None: {0}".format(type(None)))
+```
+
+```{python}
+a = None
+b = None
+c = None
+print("a is b is", a is b)
+print("a is c is", a is c)
+print("a is None is", a is None)
+print("b is None is", b is None)
+print("c is None is", a is None)
+```
+
+```{python}
+def square(a):
+    return a ** 2
+
+type(square)
+```
+
+```{python}
+print(type(square))
+```
+
+```{python}
+f = square
+```
+
+```{python}
+print("Memory ID of f: {0}".format(hex(id(f))))
+print("Memory ID of square: {0}".format(hex(id(square))))  # Same
+print("f is square is", f is square)
+```
+
+```{python}
+def cube(a):
+    return a ** 3
+
+def select_function(fn_id):
+    if fn_id == 1:
+        return square
+    else:
+        return cube
+```
+
+```{python}
+f = select_function(1)
+print("Memory ID of square: {0}".format(hex(id(square))))
+print("Memory ID of f: {0}".format(hex(id(f))))
+print("f is square is", f is square)
+```
+
+```{python}
+f = select_function(2)
+print("Memory ID of cube: {0}".format(hex(id(cube))))
+print("Memory ID of f: {0}".format(hex(id(f))))
+print("f is cube is", f is cube)
+```
+
+```{python}
+# Another way of writing
+select_function(1)(2)
+```
+
+```{python}
+def exec_function(fn, n):
+    return fn(n)
+```
+
+```{python}
+exec_function(cube, 3)
+```
+
+```{python}
+exec_function(square, 3)
+```
+
+# Python Optimisation
+## Interning
+
+```{python}
+[-5, 256]
+```
+
+```{python}
+a = 10
+b = 10
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+a = -5
+b = -5
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+a = 256
+b = 256
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+```
+
+```{python}
+a = 257
+b = 257
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Different
+```
+
+```{python}
+a = 10
+b = int(10)
+c = int('10')
+d = int('1010', base = 2)
+print(a, b, c, d)
+print(hex(id(a)), hex(id(b)), hex(id(c)), hex(id(d)))  # Same
+```
+
+## String Interning
+
+```{python}
+a = 'hello'
+b = 'hello'
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = 'hello world'
+b = 'hello world'
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Different
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+a = '_some_weird_text_here_as_long_as_there_is_no_spaces'
+b = '_some_weird_text_here_as_long_as_there_is_no_spaces'
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+import sys
+import time
+a = sys.intern('hello world')
+b = sys.intern('hello world')
+c = 'hello world'
+print("a's memory address: {0}".format(hex(id(a))))
+print("b's memory address: {0}".format(hex(id(b))))  # Same
+print("c's memory address: {0}".format(hex(id(c))))  # Different
+print("a is b is", a is b)
+print("a == b is", a == b)
+```
+
+```{python}
+def compare_using_equals(n):
+    a = 'a long string that is not interned' * 200
+    b = 'a long string that is not interned' * 200
+    for i in range(n):
+        if a == b:
+            pass
+
+def compare_using_interning(n):
+    a = sys.intern('a long string that is not interned' * 200)
+    b = sys.intern('a long string that is not interned' * 200)
+    for i in range(n):
+        if a is b:
+            pass
+```
+
+```{python}
+start = time.perf_counter()
+compare_using_equals(10000000)
+end = time.perf_counter()
+print('Equality: ', end - start)
+```
+
+```{python}
+start = time.perf_counter()
+compare_using_interning(10000000)
+end = time.perf_counter()
+print('Interning', end - start)
+```
+
+## Peephole
+
+```{python}
+def my_func():
+    a = 24 * 60
+    b = (1, 2) * 5
+    c = 'abc' * 3
+    d = 'ab' * 11
+    e = 'the quick brown fox' * 5
+    f = ['a', 'b'] * 3
+```
+
+```{python}
+my_func.__code__.co_consts
+```
+
+```{python}
+def my_func(e):
+    if e in [1, 2, 3]:
+        pass
+
+my_func.__code__.co_consts
+```
+
+```{python}
+def my_func(e):
+    if e in {1, 2, 3}:
+        pass
+
+my_func.__code__.co_consts
+```
+
+```{python}
+import string
+import time
+
+string.ascii_letters
+char_list = list(string.ascii_letters)
+char_tuple = tuple(string.ascii_letters)
+char_set = set(string.ascii_letters)
+print(char_list)
+print(char_tuple)
+print(char_set)
+```
+
+```{python}
+def membership_test(n, container):
+    for i in range(n):
+        if 'z' in container:
+            pass
+```
+
+```{python}
+start = time.perf_counter()
+membership_test(10000000, char_list)
+end = time.perf_counter()
+print('List: ', end - start)
+```
+
+```{python}
+start = time.perf_counter()
+membership_test(10000000, char_tuple)
+end = time.perf_counter()
+print('Tuple: ', end - start)
+```
+
+```{python}
+start = time.perf_counter()
+membership_test(10000000, char_set)
+end = time.perf_counter()
+print('Set: ', end - start)
+```
