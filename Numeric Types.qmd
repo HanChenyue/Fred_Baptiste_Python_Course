@@ -1,0 +1,221 @@
+---
+title: "Numeric Types"
+format: html
+---
+
+# Integers
+## Data Types
+
+```{python}
+import sys
+import time
+print(type(100))
+```
+
+```{python}
+sys.getsizeof(0)
+```
+
+```{python}
+sys.getsizeof(1)
+```
+
+```{python}
+sys.getsizeof(2**1000)
+```
+
+```{python}
+(160 - 24) * 8  # Number of bits to store 2**1000
+```
+
+```{python}
+def calc(a):
+    for i in range(10000000):
+        a * 2
+```
+
+```{python}
+start = time.perf_counter()
+calc(10)
+end = time.perf_counter()
+print("Time taken: {0}".format(end - start))
+```
+
+```{python}
+start = time.perf_counter()
+calc(2**100)
+end = time.perf_counter()
+print("Time taken: {0}".format(end - start))
+```
+
+```{python}
+start = time.perf_counter()
+calc(2**10000)
+end = time.perf_counter()
+print("Time taken: {0}".format(end - start))
+```
+
+## Operations
+
+```{python}
+import math
+```
+
+```{python}
+math.floor(3.15)
+```
+
+```{python}
+math.floor(3.99999)
+```
+
+```{python}
+math.floor(-3.14)
+```
+
+```{python}
+math.floor(-3.00000001)
+```
+
+```{python}
+math.floor(-3.00000000000001)
+```
+
+```{python}
+math.floor(-3.0000000000000001)  # 15 zeros, we encountered limited precision
+```
+
+```{python}
+a = 33
+b = 16
+print(a / b)
+print(a // b)
+print(math.floor(a / b ))
+```
+
+```{python}
+a = -33
+b = 16
+print(a / b)
+print(a // b)
+print(math.floor(a / b ))
+```
+
+```{python}
+a = -33
+b = 16
+print(a / b)
+print(a // b)
+print(math.floor(a / b ))
+print(math.trunc(a/b))
+```
+
+```{python}
+a = 13
+b = 4
+print('{0} / {1} = {2}'.format(a, b, a / b))
+print('{0} // {1} = {2}'.format(a, b, a // b))
+print('{0} % {1} = {2}'.format(a, b, a % b))
+print(a == b * (a // b) + (a % b))
+```
+
+```{python}
+a = -13
+b = 4
+print('{0} / {1} = {2}'.format(a, b, a / b))
+print('{0} // {1} = {2}'.format(a, b, a // b))
+print('{0} % {1} = {2}'.format(a, b, a % b))
+print(a == b * (a // b) + (a % b))
+```
+
+```{python}
+a = 13
+b = -4
+print('{0} / {1} = {2}'.format(a, b, a / b))
+print('{0} // {1} = {2}'.format(a, b, a // b))
+print('{0} % {1} = {2}'.format(a, b, a % b))
+print(a == b * (a // b) + (a % b))
+```
+
+```{python}
+a = -13
+b = -4
+print('{0} / {1} = {2}'.format(a, b, a / b))
+print('{0} // {1} = {2}'.format(a, b, a // b))
+print('{0} % {1} = {2}'.format(a, b, a % b))
+print(a == b * (a // b) + (a % b))
+```
+
+## Constructors and Bases: Coding
+
+```{python}
+import fractions
+```
+
+```{python}
+a = int('101', base = 2)
+b = 0b101
+```
+
+```{python}
+def from_base10(n, b):
+    if b < 2:
+        raise ValueError("Base b must be >= 2")
+    if n < 0:
+        raise ValueError("Number n must be >= 0")
+    if n == 0:
+        return [0]
+    digits = []
+    while n > 0:
+        n, m = divmod(n, b)
+        digits.insert(0, m)
+    # return print("n = {0}, b = {1}, digits = {2}".format(n, b, digits))
+    return digits
+```
+
+```{python}
+from_base10(10, 2)
+from_base10(255, 16)
+```
+
+```{python}
+def encode(digits, digit_map):
+    if max(digits) >= len(digit_map):
+        raise ValueError("Digit map is not long enough to encode the digits.")
+    # encoding = ""
+    # for d in digits:
+    #     encoding += digit_map[d]
+    # return print("digits  = {0}, digit_map = {1}, encoding = {2}".format(digits, digit_map, encoding))
+    return "".join([digit_map[d] for d in digits])
+```
+
+```{python}
+encode([15, 15], '0123456789ABCDEF')
+```
+
+```{python}
+def rebase_from10(number, base):
+    digit_map = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if base < 2 or base > 36:
+        raise ValueError("Invalid Base: 2 <= Base <= 36")
+    sign = -1 if number < 0 else 1
+    number *= sign
+
+    digits = from_base10(number, base)
+    encoding = encode(digits, digit_map)
+    if sign == -1:
+        encoding = "-" + encoding
+    return encoding
+```
+
+```{python}
+e = rebase_from10(-314, 2)
+print(e)
+print(int(e, base = 2))
+```
+
+```{python}
+e = rebase_from10(-3451, 16)
+print(e)
+print(int(e, base = 16))
+```
